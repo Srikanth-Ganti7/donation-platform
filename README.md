@@ -13,9 +13,12 @@ A comprehensive FastAPI-based donation platform backend with SQLite database, in
 ### **Key Features**
 - ✅ **Smart Point System** - Dynamic scoring based on item urgency and donation frequency
 - ✅ **User Rankings** - Gamified progression system (Bronze → Silver → Gold → Platinum → Diamond)
+- ✅ **Leaderboard System** - Real-time rankings showing top donors with points and badges
+- ✅ **Achievement Badges** - Unlock badges for milestones (First Blood, Lifesaver, Generous Giver, Point Master, Rank badges)
 - ✅ **Real-time Tracking** - Complete donation history with timestamps and locations
 - ✅ **Pre-populated Needs** - System starts with 6 predefined urgent item categories
 - ✅ **Frequency Bonuses** - Rewards for consistent donors
+- ✅ **Auto-updating Gamification** - Ranks and badges update automatically with each donation
 - ✅ **RESTful API** - Clean, documented endpoints for all operations
 
 ## Setup Instructions
@@ -93,16 +96,21 @@ python main.py
 ### User Management
 - **POST /users/** - Create a new user
   - Body: `{"name": "string"}`
-  - Returns: Complete user object with initial stats
-- **GET /users/{user_id}** - Get specific user by ID
+  - Returns: Complete user object with initial stats and empty badges array
+- **GET /users/{user_id}** - Get specific user by ID (includes badges)
 - **GET /users/** - Get all users (supports pagination: `?skip=0&limit=100`)
 
+### Gamification & Leaderboards 🎮
+- **GET /leaderboard/** - Get top users ranked by points (⭐ **New in Phase 2**)
+  - Query params: `?limit=10` (default: 10 users)
+  - Returns: `[{"user_id": int, "name": "string", "points": int, "rank": "string", "donations_count": int, "badges": ["string"]}]`
+  - Automatically sorted by points (highest first)
+
 ### Donation System
-- **POST /donate** - Submit a donation (⭐ **Main endpoint**)
+- **POST /donate** - Submit a donation (⭐ **Main endpoint** - now with badges!)
   - Body: `{"user_id": int, "item_type": "string", "location": "string"}`
   - Returns: `{"user_id": int, "points_awarded": int, "total_points": int}`
-- **GET /donations/** - Get all donations (supports pagination)
-- **GET /donations/user/{user_id}** - Get donations by specific user
+  - **Auto-updates**: User rank, badges, and leaderboard position
 
 ### Needs Management
 - **POST /needs/** - Create a new urgent need
@@ -120,6 +128,27 @@ The system automatically creates these urgent needs:
 | **books** | medium | 1.1× | Educational materials |
 | **toys** | low | 1.0× | Children's comfort items |
 | **electronics** | low | 1.0× | Communication devices |
+
+### 🏅 Achievement Badge System (Phase 2)
+Users automatically earn badges for various milestones:
+
+| Badge Name | Requirement | Description |
+|------------|-------------|-------------|
+| **First Blood** | Make 1st donation | Welcome to the platform! |
+| **Lifesaver** | Donate medical_supplies | Hero of emergency response |
+| **Generous Giver** | Make 10 donations | Consistent contributor |
+| **Point Master** | Earn 1000+ points | Dedicated philanthropist |
+| **High Roller** | Single donation worth 200+ points | Big impact donation |
+| **Silver Star** | Reach Silver rank | Rising contributor |
+| **Golden Hero** | Reach Gold rank | Community champion |
+| **Platinum Champion** | Reach Platinum rank | Elite donor status |
+| **Diamond Legend** | Reach Diamond rank | Legendary philanthropist |
+
+**Badge Features:**
+- 🔄 **Auto-awarded** on donation completion
+- 🏆 **Permanent** - once earned, never lost
+- 📊 **Visible** in leaderboard and user profiles
+- 🎯 **Stackable** - users can earn multiple badges
 
 ## Testing Instructions
 
@@ -158,7 +187,32 @@ curl -X GET "http://localhost:8000/users/1"
 curl -X GET "http://localhost:8000/needs/"
 ```
 
-### 2. Using Postman
+**Get Leaderboard (Phase 2):**
+```bash
+curl -X GET "http://localhost:8000/leaderboard/"
+```
+
+### 2. Using Interactive Docs (Recommended for Phase 2)
+
+1. **Start server**: `.\run_server.bat`
+2. **Open browser**: http://localhost:8000/docs
+3. **Test all endpoints interactively** with real-time badge and leaderboard updates
+
+### 3. Phase 2 Comprehensive Testing
+
+**Automated Testing:**
+```bash
+# Run the comprehensive Phase 2 test suite
+python comprehensive_test_phase2.py
+```
+
+This tests:
+- ✅ All 9 badge types and their triggers
+- ✅ Leaderboard sorting and structure
+- ✅ Rank progression with rank badges
+- ✅ Auto-updating gamification system
+
+### 4. Using Postman
 
 1. **Import the following requests:**
 

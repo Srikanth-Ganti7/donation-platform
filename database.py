@@ -17,6 +17,7 @@ class User(Base):
     points = Column(Integer, default=0)
     rank = Column(String, default="Bronze")
     donations_count = Column(Integer, default=0)
+    badges = Column(String, default="")  # JSON string of earned badges
     
     donations = relationship("Donation", back_populates="user")
 

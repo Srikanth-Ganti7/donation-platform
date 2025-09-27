@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 class UserCreate(BaseModel):
     name: str
@@ -11,6 +11,7 @@ class UserResponse(BaseModel):
     points: int
     rank: str
     donations_count: int
+    badges: List[str] = []  # List of badge names
     
     class Config:
         from_attributes = True
@@ -54,3 +55,14 @@ class DonateResponse(BaseModel):
     user_id: int
     points_awarded: int
     total_points: int
+
+class LeaderboardEntry(BaseModel):
+    user_id: int
+    name: str
+    points: int
+    rank: str
+    donations_count: int
+    badges: List[str] = []
+    
+    class Config:
+        from_attributes = True
