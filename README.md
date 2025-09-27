@@ -20,36 +20,69 @@ A comprehensive FastAPI-based donation platform backend with SQLite database, in
 
 ## Setup Instructions
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-   *Note: Dependencies are already installed in the virtual environment*
+### **🪟 Windows Users**
 
-2. **Run the server (Option 1 - Use batch file):**
+1. **First-time setup (run once):**
    ```bash
-   run_server.bat
+   setup.bat
    ```
-   *This automatically uses the correct Python environment*
+   *This will create the virtual environment and install all dependencies*
 
-3. **Run the server (Option 2 - Activate environment manually):**
+2. **Run the server:**
    ```bash
-   # Activate virtual environment
-   .venv\Scripts\activate.bat
-   
-   # Then run server
-   python main.py
+   run_server.bat              # Recommended - one-click start
    ```
 
-4. **Run the server (Option 3 - Use full path):**
+3. **Alternative methods:**
    ```bash
-   C:\ganti.b\Hackathon\GWH\.venv\Scripts\python.exe main.py
+   activate_env.bat             # Activate environment manually, then: python main.py
+   .\.venv\Scripts\python.exe main.py    # Direct execution
    ```
 
-5. **Access the API:**
-   - Server will be available at: http://localhost:8000
-   - Interactive API docs: http://localhost:8000/docs
-   - Alternative docs: http://localhost:8000/redoc
+### **🐧🍎 Linux/macOS Users**
+
+1. **First-time setup (run once):**
+   ```bash
+   chmod +x setup.sh run_server.sh   # Make scripts executable
+   ./setup.sh
+   ```
+
+2. **Run the server:**
+   ```bash
+   ./run_server.sh              # One-click start
+   ```
+
+3. **Alternative methods:**
+   ```bash
+   source .venv/bin/activate    # Activate environment manually
+   python main.py               # Then run server
+   ```
+
+### **🌍 Universal Method (Any OS)**
+
+```bash
+# Create virtual environment
+python -m venv .venv
+
+# Activate (Windows)
+.venv\Scripts\activate
+# OR Activate (Linux/macOS)  
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run server
+python main.py
+```
+
+### **🌐 Access the API:**
+- **Server**: Automatically finds available port (usually http://localhost:8000)
+- **Interactive API docs**: http://localhost:PORT/docs ← **Start here!**
+- **Alternative docs**: http://localhost:PORT/redoc  
+- **Health check**: http://localhost:PORT/ping
+
+*The server will display the actual URLs when it starts*
 
 ## 🔌 API Endpoints
 
@@ -296,10 +329,13 @@ donation-platform/
 ├── 🧪 TESTING.md             # Detailed testing instructions
 ├── ⚡ verify_setup.py         # Setup verification script
 ├── 🧪 test_api.py            # API test suite
-├── 🚀 run_server.bat         # Windows batch server launcher
+├── 🚀 setup.bat              # Windows first-time setup
+├── 🚀 setup.sh               # Linux/macOS first-time setup
+├── 🚀 run_server.bat         # Windows server launcher
+├── 🚀 run_server.sh          # Linux/macOS server launcher
 ├── 🚀 run_server.ps1         # PowerShell server launcher
-├── 🧪 run_tests.bat          # Windows batch test runner
-├── 🔧 activate_env.bat       # Virtual environment activator
+├── 🧪 run_tests.bat          # Windows test runner
+├── 🔧 activate_env.bat       # Windows environment activator
 ├── 🔍 check_python.bat       # Python environment diagnostics
 ├── 📊 donation_platform.db   # SQLite database (auto-created)
 ├── 🔒 .gitignore            # Git ignore rules
@@ -308,33 +344,55 @@ donation-platform/
 
 ## 🛠️ Utility Scripts
 
-### **Server Management**
-- **`run_server.bat`** - One-click server start (Windows)
-- **`run_server.ps1`** - PowerShell server launcher
-- **`activate_env.bat`** - Activate virtual environment manually
+### **📦 Setup Scripts**
+- **`setup.bat`** (Windows) / **`setup.sh`** (Linux/macOS) - First-time setup
+- **`activate_env.bat`** - Manually activate Windows environment
 
-### **Development & Testing**
+### **🚀 Server Management**  
+- **`run_server.bat`** (Windows) / **`run_server.sh`** (Linux/macOS) - Start server
+- **`run_server.ps1`** - PowerShell server launcher (Windows alternative)
+
+### **🧪 Development & Testing**
 - **`verify_setup.py`** - Verify all dependencies and setup
 - **`test_api.py`** - Comprehensive API test suite
-- **`run_tests.bat`** - Run all tests with one click
-- **`check_python.bat`** - Diagnose Python environment issues
+- **`run_tests.bat`** - Run all tests (Windows)
+- **`check_python.bat`** - Diagnose Python environment issues (Windows)
 
-### **Quick Commands**
+### **🎯 Quick Commands**
+
+**Windows:**
 ```bash
-# Start server (choose one)
-.\run_server.bat          # Batch file method
-.\run_server.ps1          # PowerShell method
-python main.py            # After activating environment
+# First time setup
+setup.bat
+
+# Start server  
+.\run_server.bat
 
 # Run tests
-.\run_tests.bat           # Batch file method
-python test_api.py        # Direct method
-
-# Verify setup
-python verify_setup.py    # Check if everything works
+.\run_tests.bat
 
 # Check environment
-.\check_python.bat        # Diagnose Python issues
+.\check_python.bat
+```
+
+**Linux/macOS:**
+```bash
+# First time setup
+./setup.sh
+
+# Start server
+./run_server.sh
+
+# Manual setup alternative
+source .venv/bin/activate
+python main.py
+```
+
+**Universal (after environment activation):**
+```bash
+python main.py              # Start server
+python test_api.py           # Run tests  
+python verify_setup.py       # Verify setup
 ```
 
 ## 🏅 What Makes This Special

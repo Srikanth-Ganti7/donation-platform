@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from contextlib import asynccontextmanager
 from sqlalchemy.orm import Session
 from database import get_db, User, Donation, Need, engine
 from schemas import (
@@ -8,7 +9,33 @@ from schemas import (
 from typing import List
 import math
 
-app = FastAPI(title="Donation Platform API", version="1.0.0")
+# Initialize some sample needs data
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    from database import SessionLocal
+    db = SessionLocal()
+    
+    # Check if needs already exist
+    if db.query(Need).count() == 0:
+        sample_needs = [
+            Need(item_type="food", urgency_level="high", multiplier=1.5),
+            Need(item_type="clothing", urgency_level="medium", multiplier=1.2),
+            Need(item_type="toys", urgency_level="low", multiplier=1.0),
+            Need(item_type="medical_supplies", urgency_level="critical", multiplier=2.0),
+            Need(item_type="books", urgency_level="medium", multiplier=1.1),
+            Need(item_type="electronics", urgency_level="low", multiplier=1.0),
+        ]
+        
+        for need in sample_needs:
+            db.add(need)
+        db.commit()
+    
+    db.close()
+    yield
+    # Shutdown (if needed)
+
+app = FastAPI(title="Donation Platform API", version="1.0.0", lifespan=lifespan)
 
 # Health check endpoint
 @app.get("/ping")
@@ -133,29 +160,24 @@ def get_user_donations(user_id: int, db: Session = Depends(get_db)):
     donations = db.query(Donation).filter(Donation.user_id == user_id).all()
     return donations
 
-# Initialize some sample needs data
-@app.on_event("startup")
-async def startup_event():
-    from database import SessionLocal
-    db = SessionLocal()
-    
-    # Check if needs already exist
-    if db.query(Need).count() == 0:
-        sample_needs = [
-            Need(item_type="food", urgency_level="high", multiplier=1.5),
-            Need(item_type="clothing", urgency_level="medium", multiplier=1.2),
-            Need(item_type="toys", urgency_level="low", multiplier=1.0),
-            Need(item_type="medical_supplies", urgency_level="critical", multiplier=2.0),
-            Need(item_type="books", urgency_level="medium", multiplier=1.1),
-            Need(item_type="electronics", urgency_level="low", multiplier=1.0),
-        ]
-        
-        for need in sample_needs:
-            db.add(need)
-        db.commit()
-    
-    db.close()
-
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import socket
+    
+    def find_free_port():
+        """Find a free port starting from 8000"""
+        for port in range(8000, 8010):
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.bind(('localhost', port))
+                    return port
+            except OSError:
+                continue
+        return 8000  # fallback
+    
+    port = find_free_port()
+    print(f"🚀 Starting Donation Platform API on port {port}")
+    print(f"📖 Interactive docs: http://localhost:{port}/docs")
+    print(f"❤️  Health check: http://localhost:{port}/ping")
+    
+    uvicorn.run(app, host="0.0.0.0", port=port)
